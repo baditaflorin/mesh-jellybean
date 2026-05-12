@@ -36,4 +36,4 @@ Visual encoding:
 
 ## Threshold to move from collect to reveal
 
-The "Move to reveal" button enables at **≥3 commitments**. Two-peer rooms can stall the round with a single non-revealing partner, and one-peer rooms have no aggregate to show. Three is the minimum where the tool's spirit (a *crowd*) is even slightly honoured.
+The "Move to reveal" button enables at **≥3 commitments**. Two-peer rooms can stall the round with a single non-revealing partner, and one-peer rooms have no aggregate to show. Three is the minimum where the tool's spirit (a _crowd_) is even slightly honoured.
