@@ -1,6 +1,9 @@
 export const appConfig = {
   appName: "mesh-jellybean",
   storagePrefix: "mesh-jellybean",
+  description:
+    "Wisdom-of-crowds estimator. Sealed-bid guesses via SHA-256 commit-reveal; reveal shows the full distribution.",
+  accentHex: "#b07cd8",
   version: __APP_VERSION__,
   commit: __GIT_COMMIT__,
   repositoryUrl: "https://github.com/baditaflorin/mesh-jellybean",
