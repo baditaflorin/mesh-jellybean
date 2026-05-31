@@ -53,6 +53,11 @@ export function Jellybean({ roomId }: Props) {
     if (!mesh.round.get("current")) {
       mesh.round.set("current", DEFAULT_ROUND);
     }
+    // Test hook: expose the room's shared CRDT maps so e2e can seed extra peers
+    // (the reveal phase gates on >= 3 commits). These maps are already fully
+    // readable/writable by every peer over the mesh, so this leaks nothing the
+    // protocol doesn't already share — it just gives the test a stable handle.
+    (window as unknown as { __meshJellybean?: typeof mesh }).__meshJellybean = mesh;
     const onChange = () => setTick((t) => t + 1);
     mesh.round.observe(onChange);
     mesh.commits.observe(onChange);
