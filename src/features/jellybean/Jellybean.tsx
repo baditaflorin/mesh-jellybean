@@ -25,6 +25,7 @@ export function Jellybean({ roomId }: Props) {
   const [verifiedReveals, setVerifiedReveals] = useState<number[]>([]);
   const [editPrompt, setEditPrompt] = useState("");
   const [editUnit, setEditUnit] = useState("");
+  const [editingPrompt, setEditingPrompt] = useState(false);
 
   const mesh = useMemo(() => {
     if (!armed) return null;
@@ -103,7 +104,7 @@ export function Jellybean({ roomId }: Props) {
           and anchor.
         </p>
         <button type="button" className="jellybean-arm-button" onClick={() => setArmed(true)}>
-          Connect
+          Join the room
         </button>
         <p className="jellybean-hint">
           Room <code>{roomId}</code>
@@ -138,6 +139,19 @@ export function Jellybean({ roomId }: Props) {
     mesh.round.set("current", { ...round, phase: "reveal" });
   };
 
+  // Edit the room-wide prompt/unit during collect (before anyone locks in, so
+  // a facilitator can frame the question without forcing a throwaway round).
+  // The prompt lives in the shared Y.Map("round"), so the new wording shows up
+  // on every phone — same channel "New round" already uses.
+  const savePrompt = () => {
+    const nextPrompt = editPrompt.trim() || round.prompt;
+    const nextUnit = editUnit.trim() || round.unit;
+    mesh.round.set("current", { ...round, prompt: nextPrompt, unit: nextUnit });
+    setEditPrompt("");
+    setEditUnit("");
+    setEditingPrompt(false);
+  };
+
   const newRound = () => {
     mesh.room.doc.transact(() => {
       mesh.commits.clear();
@@ -168,6 +182,40 @@ export function Jellybean({ roomId }: Props) {
         <div className="jellybean-prompt">
           <h2>{round.prompt}</h2>
           <p className="jellybean-unit">unit: {round.unit}</p>
+          {lockedCount === 0 &&
+            !myCommit &&
+            (editingPrompt ? (
+              <div className="jellybean-newround jellybean-prompt-edit">
+                <input
+                  className="jellybean-input"
+                  placeholder="Question (e.g. how many beans?)"
+                  value={editPrompt}
+                  onChange={(e) => setEditPrompt(e.target.value)}
+                  autoFocus
+                />
+                <input
+                  className="jellybean-input"
+                  placeholder={`Unit (e.g. ${round.unit})`}
+                  value={editUnit}
+                  onChange={(e) => setEditUnit(e.target.value)}
+                />
+                <button type="button" className="jellybean-btn-primary" onClick={savePrompt}>
+                  Save question
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="jellybean-link-btn"
+                onClick={() => {
+                  setEditPrompt(round.prompt);
+                  setEditUnit(round.unit);
+                  setEditingPrompt(true);
+                }}
+              >
+                Edit question
+              </button>
+            ))}
         </div>
 
         <div className="jellybean-input-row">

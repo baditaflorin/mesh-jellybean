@@ -9,7 +9,9 @@
 
 **Live:** https://baditaflorin.github.io/mesh-jellybean/
 
-Open the link on every phone. Set a prompt ("how many beans?", "how many users will sign up Q3?"). Each phone enters a private guess. The plaintext never goes on the wire — only a SHA-256 commitment. Once enough phones have locked in, anyone presses **Move to reveal** and the room synchronously reveals all guesses, draws a histogram, and shows mean / median / trimmed mean.
+**Try it in two tabs:** open the link twice, tap **Join the room** in both, tap **Edit question** in one and watch the prompt change in the other. Then type a guess in each and **Lock in** — each tab sees the other's locked-in count climb. (The reveal phase needs 3 locked-in peers, so for the full distribution open a third tab or phone.)
+
+Open the link on every phone. Tap **Edit question** to set a prompt ("how many beans?", "how many users will sign up Q3?"). Each phone enters a private guess. The plaintext never goes on the wire — only a SHA-256 commitment. Once enough phones have locked in, anyone presses **Move to reveal** and the room synchronously reveals all guesses, draws a histogram, and shows mean / median / trimmed mean.
 
 The commit-reveal flow is what makes the aggregate honest — late guessers cannot anchor on early ones to inflate their accuracy, because nobody can see plaintext until everyone has hashed.
 

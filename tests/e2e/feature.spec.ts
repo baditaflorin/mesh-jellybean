@@ -28,8 +28,8 @@ test("peer A's guess reveals on peer B with full distribution stats", async ({
   const { a, b, cleanup } = await openTwoPeers(browser, baseURL ?? "", { storagePrefix });
   try {
     // Both peers join the mesh (the arm/Connect screen).
-    await a.getByRole("button", { name: "Connect" }).click();
-    await b.getByRole("button", { name: "Connect" }).click();
+    await a.getByRole("button", { name: "Join the room" }).click();
+    await b.getByRole("button", { name: "Join the room" }).click();
 
     // Peer A enters a guess and locks in (publishes a SHA-256 commitment).
     await a.locator("input.jellybean-input").fill("100");
@@ -96,6 +96,38 @@ test("peer A's guess reveals on peer B with full distribution stats", async ({
     await expect(
       b.locator(".jellybean-stats > div", { hasText: /^n \// }).locator(".jellybean-stat-val"),
     ).toContainText("2 ·");
+  } finally {
+    await cleanup();
+  }
+});
+
+/**
+ * Cross-peer test for the facilitator action the README leads with: "Set a
+ * prompt." The prompt lives in the shared Y.Map("round"), so when peer A edits
+ * the question during collect (before anyone has locked in), peer B's screen
+ * must show the new wording — proving the round state, not just the
+ * commit/reveal maps, crosses the mesh.
+ */
+test("peer A's prompt edit propagates to peer B", async ({ browser, baseURL }) => {
+  const { a, b, cleanup } = await openTwoPeers(browser, baseURL ?? "", { storagePrefix });
+  try {
+    await a.getByRole("button", { name: "Join the room" }).click();
+    await b.getByRole("button", { name: "Join the room" }).click();
+
+    // Both peers start on the default prompt.
+    await expect(a.locator(".jellybean-prompt h2")).toHaveText("How many beans in the jar?");
+    await expect(b.locator(".jellybean-prompt h2")).toHaveText("How many beans in the jar?");
+
+    // Peer A reframes the question (and unit) before anyone locks in.
+    await a.getByRole("button", { name: "Edit question" }).click();
+    const editInputs = a.locator(".jellybean-prompt-edit input.jellybean-input");
+    await editInputs.nth(0).fill("How many users sign up in Q3?");
+    await editInputs.nth(1).fill("users");
+    await a.getByRole("button", { name: "Save question" }).click();
+
+    // CROSS-PEER: peer B (who touched nothing) now shows A's new question + unit.
+    await expect(b.locator(".jellybean-prompt h2")).toHaveText("How many users sign up in Q3?");
+    await expect(b.locator(".jellybean-unit")).toHaveText("unit: users");
   } finally {
     await cleanup();
   }

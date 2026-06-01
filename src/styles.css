@@ -123,6 +123,24 @@ body,
   color: var(--muted);
 }
 
+.jellybean-link-btn {
+  margin-top: 0.5rem;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0.2rem;
+}
+
+.jellybean-prompt-edit {
+  margin-top: 0.7rem;
+  border-top: none;
+  padding-top: 0;
+  text-align: left;
+}
+
 .jellybean-input-row {
   display: flex;
   gap: 0.5rem;
